@@ -1,12 +1,12 @@
-# Siglark
+# Siglark - a self-hostable NXS signaling provider
 
-A self-hostable **NetherNet External Signaling (NXS v1)** provider for Minecraft: Bedrock Edition, written in Go.
+A self-hostable **NetherNet External Signaling (NXS v1)** provider for Minecraft: Bedrock Edition, written in Go
 
 Verified end-to-end with a real Bedrock client (2026-11): the client discovers the server through Siglark, completes the control-WebSocket assisted join, and lands in Paper via Geyser's `nxs` signaling mode.
 
 ## What is this?
 
-NetherNet is the WebRTC-based transport Bedrock Edition is moving to. With the `nxs` transport, a Bedrock client talks to an external signaling service to discover servers and set up its WebRTC connection — the same role Mojang's hosted signaling plays. Siglark is an independent implementation of that service, so you can run the signaling yourself instead of depending on anyone's hosted instance.
+NetherNet is the WebRTC-based transport Bedrock Edition is moving to. With the `nxs` transport, a Bedrock client talks to an external signaling service to discover servers and set up its WebRTC connection — the same role Geyser's default Warden service plays. Siglark is an independent implementation of that service, so you can run the signaling on your own machine and network instead of routing player joins through a hosted third party.
 
 ## Features
 
