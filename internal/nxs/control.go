@@ -224,6 +224,10 @@ func (h *ControlHub) Assist(ctx context.Context, req AssistRequest) (string, err
 	if err := session.writeText(string(raw)); err != nil {
 		return "", errHostUnavailable
 	}
+	slog.Debug("nxs: assisted join sent", "id", attemptID, "keyId", req.KeyID,
+		"generation", req.Generation, "incarnation", req.Incarnation,
+		"hostFingerprint", req.HostFingerprint, "expiresAt", expiresAt,
+		"networkId", req.NetworkID, "cpk", req.CPK, "offer", req.Offer)
 
 	timer := time.NewTimer(h.timeout)
 	defer timer.Stop()
@@ -489,6 +493,7 @@ func (s *controlSession) handleAssistedResult(text string) error {
 		s.deliver(frame.ID, assistResult{answer: frame.Answer})
 		return nil
 	}
+	slog.Debug("nxs: host refused assisted join", "raw", text[:min(len(text), 512)])
 	s.deliver(frame.ID, assistResult{status: http.StatusForbidden, reason: "the host refused the join"})
 	return nil
 }

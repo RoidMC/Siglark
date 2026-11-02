@@ -1,0 +1,6 @@
+.git
+testenv
+todo.md
+*.log
+*.exe
+data

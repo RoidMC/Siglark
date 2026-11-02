@@ -1,0 +1,42 @@
+name: siglark-pnx
+
+services:
+  # NXS provider. Starts first so PNX can register against it.
+  siglark:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      SIGLARK_CONFIG: /etc/siglark/config.yaml
+    volumes:
+      - ./siglark.yaml:/etc/siglark/config.yaml:ro
+      - siglark-data:/data
+      # PNX writes keys/identity.pem here; Siglark signs the server identity
+      # assertion with it, so the file has to be readable across containers.
+      - pnx-data:/pnx:ro
+    ports:
+      - "${SIGLARK_PORT:-8080}:8080"
+    # PNX generates identity.pem on its first boot. Blocking here keeps Siglark
+    # from exiting because the key it needs is not there yet.
+    entrypoint:
+      - /bin/sh
+      - -c
+      - until [ -f /pnx/keys/identity.pem ]; do echo "waiting for PNX to generate keys/identity.pem"; sleep 2; done; exec /usr/local/bin/siglark
+
+  pnx:
+    image: ghcr.io/powernukkitx/server:${PNX_TAG:-latest}
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    volumes:
+      - pnx-data:/data
+    ports:
+      # NetherNet media port. Clients reach this directly after signaling, so
+      # it must be reachable from wherever players are: LAN, or a forwarded
+      # public port.
+      - "${PNX_PORT:-19132}:19132/udp"
+
+volumes:
+  siglark-data:
+  pnx-data:

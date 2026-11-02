@@ -77,6 +77,25 @@ nxs:
 
 > **Security note:** this means the Siglark process holds the host's private identity key. That is fine when you operate both (the common self-hosted case: Geyser + Siglark on the same side). Long-term, hosts will upload their assertion material at registration so the provider never touches private keys — tracked on the roadmap.
 
+### PowerNukkitX
+
+PNX uses the same external-signaling client library as Geyser, so it registers with Siglark unchanged. Its `nxs.endpoint` defaults to a hosted service; point it at your own provider instead (`pnx.settings.network.nethernet` in `pnx.yml`):
+
+| Setting | Value |
+|---|---|
+| signaling mode | `nxs` |
+| `nxs.endpoint` | `http://your-siglark-host:8080` |
+| `nxs.token` | empty unless you issued one |
+| `nxs.advertise-addresses` | the address clients reach for UDP media |
+| `nxs.advanced.assisted-joins` | `true` |
+| `identity-file` | `keys/identity.pem` (PNX generates it on first boot) |
+
+Point `identity_pem` at that same file. A ready-to-run Docker Compose setup, including the shared volume that lets Siglark read PNX's key, is in [examples/pnx](examples/pnx/README.md).
+
+> **WARNING — PNX needs a publicly scoped address.** PNX's Cloudburst signaling client only builds assisted-join answers when the host publishes at least one candidate in the **public** address scope. A LAN-only host (private, loopback, link-local, or reserved addresses such as `192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`) is rejected **before** the offer is ever forwarded: the client logs `No eligible assisted discovery endpoint` and players only see the generic "you are not invited to play on this server" message. Siglark cannot work around this — the refusal happens in the host process.
+>
+> Working configurations are: a host with a real public IP or port mapping; a NATed host with reachable STUN plus an HTTPS provider (Siglark does not implement the diagnostics/connectivity endpoints yet); or a patched Cloudburst library that relaxes the scope check. If you hit this on a LAN test box, do **not** file it as a Siglark bug.
+
 ## Client-side contract
 
 A player enters `your-siglark-host:8080` in the Bedrock "Add Server" dialog. The client then talks to Siglark directly; Geyser is not in the signaling path.

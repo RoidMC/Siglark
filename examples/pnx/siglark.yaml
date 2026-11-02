@@ -1,0 +1,64 @@
+server:
+  name: Siglark
+  version: 0.1.0
+  env: production
+
+http:
+  host: 0.0.0.0
+  port: 8080
+  read_timeout: 30
+  write_timeout: 30
+  shutdown_timeout: 10
+  max_header_bytes: 1048576
+  tls:
+    enabled: false
+    cert_file: ""
+    key_file: ""
+
+storage:
+  driver: "file"
+  path: "/data/siglark.json"
+
+nxs:
+  # The origin PNX uses to reach this provider (docker service name). Every
+  # signature audience and the discovery document use this exact string. Use
+  # https:// in production; http:// is only acceptable on a private network.
+  provider_origin: "http://siglark:8080"
+
+  bearer_tokens: []
+  proof_of_work_difficulty: 0
+  challenge_ttl_seconds: 300
+  heartbeat_interval_ms: 10000
+  lease_millis: 70000
+  min_update_interval_ms: 1000
+  old_key_retire_seconds: 86400
+
+  # Protects /v1/admin/*. Change this before exposing the port.
+  admin_token: "change-me"
+
+  registration_retention_seconds: 86400
+  sweep_interval_seconds: 30
+
+  # One entry per address players type into the client. `host` is matched
+  # against the HTTP Host header (a port is ignored), so this must be the
+  # address players actually enter, not the container name.
+  #
+  # registration_id comes from the PNX registration; see README step 5.
+  # identity_pem is the key PNX generated, mounted read-only from its volume.
+  hosts:
+    - host: "192.168.1.10"
+      registration_id: "reg_replace_me"
+      identity_pem: "/pnx/keys/identity.pem"
+      identity_domain: "Siglark-SelfhostNXS"
+
+  # "minecraft" verifies the client's game token against the official JWKS.
+  identity_trust: "minecraft"
+
+  admission_ttl_seconds: 60
+  assisted_join_timeout_ms: 30000
+  websocket_control: true
+
+log:
+  level: info
+  format: json
+  output: stdout

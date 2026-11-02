@@ -278,6 +278,7 @@ func (h *JoinHandler) join(w http.ResponseWriter, r *http.Request) {
 		"xuid", verified.XUID, "xname", verified.XName,
 		"tokenAlg", verified.TokenAlg, "tokenIssuer", verified.TokenIssuer,
 		"tokenKeyId", verified.TokenKeyID)
+	slog.Debug("nxs: assisted answer", "networkId", networkText, "sdp", answer)
 	w.Header().Set("Content-Type", "application/sdp")
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write([]byte(answer))
