@@ -1,0 +1,86 @@
+server:
+  name: Siglark
+  version: 0.1.0
+  env: development
+
+http:
+  host: 0.0.0.0
+  port: 8080
+  read_timeout: 30
+  write_timeout: 30
+  shutdown_timeout: 10
+  max_header_bytes: 1048576
+  tls:
+    enabled: false
+    cert_file: ""
+    key_file: ""
+
+storage:
+  # "file" persists challenges and registrations in one JSON snapshot; use
+  # "memory" for throwaway development.
+  driver: "file"
+  path: "data/siglark.json"
+
+nxs:
+  # Canonical origin of this provider. Every signature audience and the
+  # discovery document use this exact string; clients must configure it
+  # verbatim. Use https:// in production. http:// is allowed for loopback
+  # development only.
+  provider_origin: "http://localhost:8080"
+
+  # Bearer tokens grant attach-instance authority during enrollment.
+  # Leave empty to allow anonymous new-service registrations only.
+  bearer_tokens: []
+
+  # 0..24; 0 keeps the MVP usable without proof-of-work tuning.
+  proof_of_work_difficulty: 0
+
+  challenge_ttl_seconds: 300
+
+  heartbeat_interval_ms: 10000
+  lease_millis: 70000
+  min_update_interval_ms: 1000
+
+  old_key_retire_seconds: 86400
+
+  # Protects /v1/admin/*. Empty disables the operator API.
+  admin_token: ""
+
+  # Expired registrations stay recoverable for this long before being deleted.
+  registration_retention_seconds: 86400
+
+  # How often the provider reclaims expired registrations.
+  sweep_interval_seconds: 30
+
+  # Client signaling. GET /v1/join answers on this provider's own Host; a
+  # POST /v1/join/{networkId} is routed to a registration by the Host header,
+  # so a provider serving several hosts lists them here.
+  # identity_pem signs the server identity assertion placed in each answer;
+  # identity_domain is the namespace clients track that identity under
+  # (first-use trust). It defaults to "Siglark-SelfhostNXS". If you change it
+  # on a server entry players already saved, the client may prompt or refuse
+  # to connect; removing and re-adding the entry resets that state.
+  # hosts:
+  #   - host: "example.com"
+  #     registration_id: "<registration id from /v1/admin/registrations>"
+  #     identity_pem: "path/to/identity.pem"
+  #     identity_domain: "Siglark-SelfhostNXS"
+
+  # "minecraft" verifies the client's game token against the Minecraft
+  # authorization JWKS; "any" only requires an expiry and is for development.
+  identity_trust: "minecraft"
+
+  # Lifetime of the stateless admission token handed to a joining client.
+  admission_ttl_seconds: 60
+
+  # How long POST /v1/join waits for the host's answer over the control
+  # WebSocket before returning 504.
+  assisted_join_timeout_ms: 30000
+
+  # Optional /v1/nxs/control WebSocket carrier. Assisted joins need it.
+  websocket_control: true
+
+log:
+  level: info
+  format: json
+  output: stdout

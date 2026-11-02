@@ -1,0 +1,31 @@
+NXS v1 规范资源来源说明
+================================
+
+本目录文件均从 CloudburstMC/Network 仓库原样下载，未做任何修改。
+
+来源仓库: https://github.com/CloudburstMC/Network
+分支: nethernet
+提交: 35cfff20cc720ebb4f54237b4ab626c727039f10 (2026-10-30T12:54:52Z)
+许可: Apache License 2.0 (仓库根目录 LICENSE)
+
+原始路径前缀: docs/external-signaling/
+下载地址: https://raw.githubusercontent.com/CloudburstMC/Network/nethernet/docs/external-signaling/<文件名>
+
+包含文件:
+  README.md
+  wire-reference.md
+  nxs-v1.schema.json
+  diagnostic-v1.schema.json
+  control-v1.md
+  connectivity-v1.md
+  diagnostic-v1.md
+  fixtures/cloudburst-protocol-vectors.v1.json
+  fixtures/diagnostic-exchange-v1.fixtures.json
+  fixtures/diagnostic-v1.fixtures.json
+  fixtures/nxs-v1.fixtures.json
+  fixtures/origins.fixtures.json
+  fixtures/provenance.json
+  fixtures/stateless-admission-v1.fixtures.json
+
+许可与版权归 CloudburstMC/Network 项目及其贡献者所有，以 Apache-2.0 授权
+本目录仅作互操作/一致性测试的参考数据，不构成对原规范的修改或再许可
