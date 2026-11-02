@@ -18,6 +18,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 
 	"github.com/roidmc/siglark/internal/config"
+	siglarkmw "github.com/roidmc/siglark/internal/middleware"
 	"github.com/roidmc/siglark/internal/nxs"
 	"github.com/roidmc/siglark/internal/storage/file"
 	"github.com/roidmc/siglark/internal/storage/memory"
@@ -86,6 +87,7 @@ func Run() error {
 	router := chi.NewRouter()
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.RealIP)
+	router.Use(siglarkmw.HTTPHeaders(cfg.Server.Version))
 	router.Get("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		if err := store.Health(r.Context()); err != nil {
 			http.Error(w, "unhealthy", http.StatusServiceUnavailable)
